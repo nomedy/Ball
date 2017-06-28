@@ -71,46 +71,24 @@ public class ball : MonoBehaviour
 
     public void OnCollisionEnter(Collision collision)
     {
-        //Debug.Log("Into rb");
-        ////ContactPoint contact = collision.contacts[0];
-        ////Vector3 newDir = Vector3.zero;
-        ////var curDir = rb.transform.TransformDirection(Vector3.forward);
-
-        //////newDir = curDir - 2 * contact.normal * (Vector3.Dot(contact.normal, curDir));
-        ////newDir = Vector3.Reflect(curDir, contact.normal);
-        ////Debug.Log(newDir);
-        //////rb.velocity = newDir.normalized * m_preVelocity.y / m_preVelocity.normalized.y;
-        ////rb.rotation = Quaternion.FromToRotation(Vector3.forward, newDir);
-        //Debug.Log("start:" + rb.velocity);
-        ////m_preVelocity = rb.velocity;
-        //ContactPoint contactPoint = collision.contacts[0];
-        //Vector3 newDir = Vector3.zero;
-        //Vector3 curDir = transform.TransformDirection(Vector3.forward);
-        //newDir = Vector3.Reflect(curDir, contactPoint.normal);
-        //newDir.z = 0;
-        //Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, newDir);
-        //transform.rotation = rotation;
-        ////rb.velocity = m_preVelocity;
-        //Debug.Log(rb.velocity.normalized);
-        //rb.velocity = new Vector3(rb.velocity.x, rb.velocity.normalized.y * 2, 0);
-        //Debug.Log("end:" + rb.velocity);
 
         if(collision.gameObject.tag=="unit")
         {
             Destroy(collision.gameObject);
         }
-        else if(collision.gameObject.name== "guard")
-        {
-            guard gd = collision.gameObject.transform.GetComponent<guard>();
+        //else if(collision.gameObject.name== "guard")
+        //{
+        //    guard gd = collision.gameObject.transform.GetComponent<guard>();
 
-            if(gd.moveDir!=0)
-            {
-                float speed = rb.velocity.magnitude;
+        //    if (gd.moveDir != 0)
+        //    {
+        //        float speed = rb.velocity.magnitude;
 
-                rb.velocity = new Vector3(gd.moveDir * 0.2f, 1 - gd.moveDir * 0.2f, 0) * speed;
-            }
+        //        if(rb.velocity.y>0.3f)
+        //            rb.velocity = new Vector3(rb.velocity.x + gd.moveDir * 0.2f, rb.velocity.y - gd.moveDir * 0.2f, 0) * speed;
+        //    }
 
-        }
+        //}
     }
 
     public void OnTriggerEnter(Collider collider)
