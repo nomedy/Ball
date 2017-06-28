@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ball : MonoBehaviour
+public class Bullet : MonoBehaviour
 {
 
     public float force = 25f;
@@ -75,6 +75,8 @@ public class ball : MonoBehaviour
         if(collision.gameObject.tag=="unit")
         {
             Destroy(collision.gameObject);
+
+            GameManager.Instance.DestroyBrick();
         }
         //else if(collision.gameObject.name== "guard")
         //{
@@ -95,9 +97,14 @@ public class ball : MonoBehaviour
     {
         if(collider.gameObject.name== "bottom")
         {
-            rb.velocity = Vector3.zero;
-            transform.position = new Vector3(initPosX, initPosY, 0);
-            Lanch();
+            GameManager.Instance.ChangeLife(-1);
         }
+    }
+
+    public void Reset()
+    {
+        rb.velocity = Vector3.zero;
+        transform.position = new Vector3(initPosX, initPosY, 0);
+        IsLanched = false;
     }
 }

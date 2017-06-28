@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class guard : MonoBehaviour {
+public class Paddle : MonoBehaviour {
 
     // Use this for initialization
     public float speed = 1200f;
     public int moveDir = 0; // -1向左1向右
 
-    public ball ballscript;
+    public Bullet ballscript;
+
+    private Vector3 initPosition;
 
     void Start () {
-        ballscript = GameObject.Find("ball").GetComponent<ball>();
-
+        initPosition = new Vector3(this.transform.position.x, this.transform.position.y, 0);
     }
 
 	// Update is called once per frame
@@ -22,6 +23,7 @@ public class guard : MonoBehaviour {
         {
             if (!ballscript.IsLanched)
             {
+                GameManager.Instance.StartGame();
                 ballscript.IsLanched = true;
                 ballscript.Lanch();
             }
@@ -79,14 +81,19 @@ public class guard : MonoBehaviour {
         //    moveDir = 0;
 
         if(Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("key down space:" + ballscript.IsLanched);
+        {            
             if (!ballscript.IsLanched)
             {
+                GameManager.Instance.StartGame();
                 ballscript.IsLanched = true;
                 ballscript.Lanch();
             }
 
         }
+    }
+
+    public void Reset()
+    {
+        this.transform.position = initPosition;
     }
 }
