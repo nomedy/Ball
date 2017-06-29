@@ -41,7 +41,7 @@ public class Paddle : MonoBehaviour {
 
         if (moveDir==1)
         {
-            if (this.transform.position.x > -2f)
+            if (this.transform.position.x > -4f)
             {
                 this.transform.Translate(Vector3.left * speed * Time.deltaTime);
             }
@@ -60,12 +60,12 @@ public class Paddle : MonoBehaviour {
 
         if (Input.GetKey(KeyCode.A))
         {
-            if (this.transform.position.x > -2f)
+            if (this.transform.position.x > -4f)
             {
                 this.transform.Translate(Vector3.left * speed * Time.deltaTime);
-                moveDir = 1;
+                
             }
-
+            moveDir = 1;
 
         }
         else if (Input.GetKey(KeyCode.D))
@@ -73,9 +73,9 @@ public class Paddle : MonoBehaviour {
             if (this.transform.position.x < 4f)
             {
                 this.transform.Translate(Vector3.right * speed * Time.deltaTime);
-                moveDir = -1;
+                
             }
-
+            moveDir = -1;
         }
         //else
         //    moveDir = 0;

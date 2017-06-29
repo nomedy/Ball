@@ -23,23 +23,13 @@ public class Bullet : MonoBehaviour
         initPosX = this.transform.position.x;
         initPosY = this.transform.position.y;
         rb = this.transform.GetComponent<Rigidbody>();
-        //rb.velocity = new Vector3(1, 2, 0);
-        ////rb.AddForce(new Vector3(2, 1, 0) * force);
-        ////m_preVelocity = rb.velocity;
-        //Debug.Log(m_preVelocity);
 
         rb.velocity = Vector3.zero;
-        //Lanch();
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(transform.rotation);
-        //transform.Translate(Vector3.up * 5 * Time.deltaTime);
-
-        //transform.position -= transform.position.z * Vector3.forward;
         if(IsLanched)
         {
             float speed = rb.velocity.magnitude;
@@ -71,26 +61,19 @@ public class Bullet : MonoBehaviour
 
     public void OnCollisionEnter(Collision collision)
     {
-
-        if(collision.gameObject.tag=="unit")
+        if (collision.gameObject.name == "paddle")
         {
-            Destroy(collision.gameObject);
+            Paddle gd = collision.gameObject.transform.GetComponent<Paddle>();
 
-            GameManager.Instance.DestroyBrick();
+            if (gd.moveDir != 0)
+            {
+                float speed = rb.velocity.magnitude;
+
+                if (rb.velocity.y > 0.3f)
+                    rb.velocity = new Vector3(rb.velocity.x + gd.moveDir * 0.2f, rb.velocity.y - gd.moveDir * 0.2f, 0) * speed;
+            }
+
         }
-        //else if(collision.gameObject.name== "guard")
-        //{
-        //    guard gd = collision.gameObject.transform.GetComponent<guard>();
-
-        //    if (gd.moveDir != 0)
-        //    {
-        //        float speed = rb.velocity.magnitude;
-
-        //        if(rb.velocity.y>0.3f)
-        //            rb.velocity = new Vector3(rb.velocity.x + gd.moveDir * 0.2f, rb.velocity.y - gd.moveDir * 0.2f, 0) * speed;
-        //    }
-
-        //}
     }
 
     public void OnTriggerEnter(Collider collider)
