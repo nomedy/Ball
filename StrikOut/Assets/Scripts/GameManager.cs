@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+public enum GameState
+{
+    Start,
+    Success,
+    Fail
+}
+
 public class GameManager : MonoBehaviour {
 
 
@@ -11,7 +19,7 @@ public class GameManager : MonoBehaviour {
     public Transform topWall;
     public Transform bottomWall;
     public Text text;
-    public Text scoreTxt;
+    public Text scoreTxt, hpTxt;
 
     public GameObject[] brickPrefab;
     private List<GameObject> bricks;
@@ -23,7 +31,8 @@ public class GameManager : MonoBehaviour {
 
     public int brickCount; //剩余砖块数量
     public int lives=3; //生命值
-    private bool canNext;
+    private GameState gameState = 0; //1成功2失败
+    private int level = 1; //当前关卡
     public int score = 0;
 	// Use this for initialization
 	void Start () {
@@ -38,9 +47,15 @@ public class GameManager : MonoBehaviour {
         lives = 3;
         score = 0;
         scoreTxt.text = "Score: " + score.ToString();
+        gameState = GameState.Start;
+        hpTxt.text = "Lives:" + lives.ToString();
         Create();
     }
 	
+    public GameState GetGameState()
+    {
+        return gameState;
+    }
 
     public void Create()
     {
@@ -91,14 +106,23 @@ public class GameManager : MonoBehaviour {
                 ++brickCount;
             }
         }
-        canNext = false;
+        gameState = 0;
     }
 
     //开始游戏
     public void StartGame()
     {
-        if (canNext)
+        if(gameState==GameState.Fail)
+        {
+            score = 0;
+            scoreTxt.text = "Score: " + score.ToString();
+
+            lives = 3;
+            hpTxt.text = "Lives:" + lives.ToString();
+        }
+        if (gameState != GameState.Start)
             this.Create();
+
         text.gameObject.SetActive(false);
     }
 
@@ -123,14 +147,13 @@ public class GameManager : MonoBehaviour {
         {
             LifeOver();
         }
+        hpTxt.text = "Lives:" + lives.ToString();
     }
 
     public void Reset()
     {
         this.ballScript.Reset();
         this.paddle.Reset();
-        score = 0;
-        scoreTxt.text = "Score: " + score.ToString();
     }
 
     //完成
@@ -139,7 +162,7 @@ public class GameManager : MonoBehaviour {
         text.gameObject.SetActive(true);
         text.text = "finish";
         this.Reset();
-        this.canNext = true;
+        this.gameState = GameState.Success;
     }
 
     //生命值为0
@@ -147,6 +170,7 @@ public class GameManager : MonoBehaviour {
     {
         text.gameObject.SetActive(true);
         text.text = "failed";
+        gameState = GameState.Fail;
     }
 
     public void ChangeScore(int _score)

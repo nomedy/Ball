@@ -57,7 +57,19 @@ public class Paddle : MonoBehaviour {
 
         }
 
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (!ballscript.IsLanched)
+            {
+                GameManager.Instance.StartGame();
+                ballscript.IsLanched = true;
+                ballscript.Lanch();
+            }
 
+        }
+
+        if (GameManager.Instance.GetGameState() != GameState.Start || !ballscript.IsLanched)
+            return;
         if (Input.GetKey(KeyCode.A))
         {
             if (this.transform.position.x > -4f)
@@ -80,16 +92,6 @@ public class Paddle : MonoBehaviour {
         //else
         //    moveDir = 0;
 
-        if(Input.GetKeyDown(KeyCode.Space))
-        {            
-            if (!ballscript.IsLanched)
-            {
-                GameManager.Instance.StartGame();
-                ballscript.IsLanched = true;
-                ballscript.Lanch();
-            }
-
-        }
     }
 
     public void Reset()
