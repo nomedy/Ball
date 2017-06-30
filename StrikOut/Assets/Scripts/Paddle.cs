@@ -12,8 +12,11 @@ public class Paddle : MonoBehaviour {
 
     private Vector3 initPosition;
 
+    private float width;
+
     void Start () {
         initPosition = new Vector3(this.transform.position.x, this.transform.position.y, 0);
+        width = gameObject.GetComponent<MeshFilter>().mesh.bounds.size.x * transform.localScale.x;
     }
 
 	// Update is called once per frame
@@ -97,5 +100,15 @@ public class Paddle : MonoBehaviour {
     public void Reset()
     {
         this.transform.position = initPosition;
+    }
+
+    public float GetDir(float pos)
+    {
+        if(pos>transform.position.x)
+        {
+            return Mathf.Lerp(0f, 0.8f, (pos - transform.position.x) / width * 2);
+        }
+        else
+            return -Mathf.Lerp(0f, 0.8f, (transform.position.x - pos) / width * 2);
     }
 }
