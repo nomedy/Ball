@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using LitJson;
 
 
 public enum GameState
@@ -9,6 +11,11 @@ public enum GameState
     Start,
     Success,
     Fail
+}
+
+public class MapCfg
+{
+    public int[] Maps;
 }
 
 public class GameManager : MonoBehaviour {
@@ -34,6 +41,7 @@ public class GameManager : MonoBehaviour {
     private GameState gameState = 0; //1成功2失败
     private int level = 1; //当前关卡
     public int score = 0;
+    private List<List<int>> maps;
 	// Use this for initialization
 	void Start () {
         if (Instance == null)
@@ -49,6 +57,20 @@ public class GameManager : MonoBehaviour {
         scoreTxt.text = "Score: " + score.ToString();
         gameState = GameState.Start;
         hpTxt.text = "Lives:" + lives.ToString();
+
+        string path = Application.dataPath + "/Resources/map.json";
+        //TextAsset txt = Resources.Load("map") as TextAsset;
+
+        if(!File.Exists(path))
+        {
+            Debug.LogError("Can't find file:" + path);
+        }
+
+        StreamReader sr = new StreamReader(path);
+        string text = sr.ReadToEnd();
+
+        maps = JsonMapper.ToObject<List<List<int>>>(text);
+        sr.Close();
         Create();
     }
 	
@@ -67,8 +89,15 @@ public class GameManager : MonoBehaviour {
         float topPos = mainCam.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y;
         float bottomPos = mainCam.ScreenToWorldPoint(new Vector3(0, 0, 0)).y;
 
-        int row = Random.Range(4, 7);
+        if (level < 0)
+            level = 0;
+        if (level >= maps.Count)
+            level = level % maps.Count;
+        List<int> nowMap = maps[level - 1];
         int col = 7;
+        int row = nowMap.Count/col;
+        if (nowMap.Count % col != 0)
+            row += 1;
         float width = brickPrefab[0].GetComponent<MeshFilter>().sharedMesh.bounds.size.x * brickPrefab[0].transform.localScale.x;
         float height = brickPrefab[0].GetComponent<MeshFilter>().sharedMesh.bounds.size.y * brickPrefab[0].transform.localScale.y;
 
@@ -90,22 +119,46 @@ public class GameManager : MonoBehaviour {
             bricks = new List<GameObject>();
         }
         brickCount = 0;
-        for (int i=0; i< row; ++i)
-        {
-            for(int j=0; j< col; ++j)
-            {
-                float x = leftWall.transform.position.x +  width + j * (width + destX);
-                float y = topWall.transform.position.y - 4 * height - i * (height + destY);
-                Debug.Log(x + ":" + y);
-                GameObject obj = Instantiate(brickPrefab[Random.Range(0, brickPrefab.Length)], new Vector3(x, y, 0), Quaternion.identity) as GameObject;
 
-                Brick bcom = obj.AddComponent<Brick>();
-                bcom.Init(Random.Range(1, 4)); //初始化可被撞击次数
-                bricks.Add(obj);
-               
-                ++brickCount;
-            }
+        for(int i=0; i<nowMap.Count; ++i)
+        {
+            if (nowMap[i] == 0)
+                continue;
+
+            int col1 = i % 7;
+            int row1 = (i-col1) / 7;
+
+            float x = leftWall.transform.position.x + width + col1 * (width + destX);
+            float y = topWall.transform.position.y - 4 * height - row1 * (height + destY);
+            Debug.Log(x + ":" + y);
+            GameObject obj = Instantiate(brickPrefab[Random.Range(0, brickPrefab.Length)], new Vector3(x, y, 0), Quaternion.identity) as GameObject;
+
+            Brick bcom = obj.AddComponent<Brick>();
+            //bcom.Init(Random.Range(1, 4)); //初始化可被撞击次数
+            bcom.Init(1); //初始化可被撞击次数
+
+            bricks.Add(obj);
+
+            ++brickCount;
         }
+
+
+        //for (int i=0; i< col; ++i)
+        //{
+        //    for(int j=0; j< row; ++j)
+        //    {
+        //        float x = leftWall.transform.position.x +  width + j * (width + destX);
+        //        float y = topWall.transform.position.y - 4 * height - i * (height + destY);
+        //        Debug.Log(x + ":" + y);
+        //        GameObject obj = Instantiate(brickPrefab[Random.Range(0, brickPrefab.Length)], new Vector3(x, y, 0), Quaternion.identity) as GameObject;
+
+        //        Brick bcom = obj.AddComponent<Brick>();
+        //        bcom.Init(Random.Range(1, 4)); //初始化可被撞击次数
+        //        bricks.Add(obj);
+               
+        //        ++brickCount;
+        //    }
+        //}
         gameState = 0;
     }
 
@@ -120,6 +173,10 @@ public class GameManager : MonoBehaviour {
             lives = 3;
             hpTxt.text = "Lives:" + lives.ToString();
         }
+
+        if (gameState == GameState.Success)
+            level += 1;
+
         if (gameState != GameState.Start)
             this.Create();
 

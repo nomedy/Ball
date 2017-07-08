@@ -10,9 +10,13 @@ public class Brick : MonoBehaviour {
 	void Start () {
 		
 	}
-	
-	// Update is called once per frame
-    
+
+    // Update is called once per frame
+    private void Update()
+    {
+        //transform.Translate(Vector3.down * Time.deltaTime);
+    }
+
     public void Init(int _hp)
     {
         hp = _hp;
@@ -34,6 +38,20 @@ public class Brick : MonoBehaviour {
                 GameManager.Instance.DestroyBrick(score);
 
             }
+        }
+        else
+        {
+            Destroy(this.gameObject);
+            GameManager.Instance.DestroyBrick(0);
+        }
+    }
+
+    public void OnTriggerEnter(Collider collider)
+    {
+        if (collider.gameObject.name == "bottom")
+        {
+            Destroy(this.gameObject);
+            GameManager.Instance.DestroyBrick(0);
         }
     }
 }
