@@ -65,12 +65,12 @@ public class Bullet : MonoBehaviour
         {
             Paddle gd = collision.gameObject.transform.GetComponent<Paddle>();
 
-            if(gd.moveDir!=0)
-            {
-                rb.velocity = new Vector3(0, 1, 0) * minSpeed;
-            }
-            else
-            {
+            //if(gd.moveDir!=0)
+            //{
+            //    rb.velocity = new Vector3(0, 1, 0) * minSpeed;
+            //}
+            //else
+            //{
                 ContactPoint contact = collision.contacts[0];
 
                 float dir = gd.GetDir(contact.point.x);
@@ -78,7 +78,7 @@ public class Bullet : MonoBehaviour
                 float speed = rb.velocity.magnitude;
 
                 rb.velocity = new Vector3(dir, rb.velocity.normalized.y, 0) * speed;
-            }
+            //}
 
         }
     }
