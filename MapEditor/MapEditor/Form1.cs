@@ -67,6 +67,7 @@ namespace MapEditor
 
         private void drawImg()
         {
+            
             Bitmap bit = new Bitmap(this.pictureBox1.Width, this.pictureBox1.Height);
             Graphics g = Graphics.FromImage(bit);
             Image img; 
